@@ -1,12 +1,20 @@
 import path from 'path';
+import webpack, { Configuration as WebpackConfiguration } from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-import webpack from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
+
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+
+interface Configuration extends WebpackConfiguration {
+  devServer?: WebpackDevServerConfiguration;
+}
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-const config: webpack.Configuration = {
-  name: 'socket-chap-app',
+const config: Configuration = {
+  name: 'react-setup-without-cra',
   mode: isDevelopment ? 'development' : 'production',
   devtool: isDevelopment ? 'hidden-source-map' : 'inline-source-map',
   resolve: {
@@ -21,7 +29,7 @@ const config: webpack.Configuration = {
     },
   },
   entry: {
-    app: './client',
+    app: './src/index',
   },
   module: {
     rules: [
@@ -35,6 +43,7 @@ const config: webpack.Configuration = {
               {
                 targets: { browsers: ['last 2 chrome versions'] },
                 debug: isDevelopment,
+                useBuiltIns: 'entry',
               },
             ],
             '@babel/preset-react',
@@ -46,32 +55,46 @@ const config: webpack.Configuration = {
             },
           },
         },
-        exclude: path.join(__dirname, 'node_modules'),
+        exclude: ['/node_modules'],
       },
       {
         test: /\.css?$/,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.(ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader',
+        options: {
+          name: '[hash].[ext]',
+          limit: 10000,
+        },
+      },
     ],
   },
   plugins: [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: isDevelopment ? 'development' : 'production',
+    }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+    }),
     new ForkTsCheckerWebpackPlugin({
       async: false,
-      // eslint: {
-      //   files: "./src/**/*",
-      // },
     }),
-    new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
+    new WebpackManifestPlugin(),
   ],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: '/dist/',
+    clean: true,
   },
   devServer: {
     historyApiFallback: true,
-    port: 3090,
-    publicPath: '/dist/',
+    port: 3000,
+    open: true,
+    hot: true,
+    compress: true,
   },
 };
 
@@ -80,6 +103,7 @@ if (isDevelopment && config.plugins) {
   config.plugins.push(new ReactRefreshWebpackPlugin());
 }
 if (!isDevelopment && config.plugins) {
+  config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
 }
 
 export default config;

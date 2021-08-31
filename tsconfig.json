@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "outDir": "./dist/",
     "esModuleInterop": true,
     "sourceMap": true,
     "lib": ["ES2020", "DOM"],
     "jsx": "react",
-    "module": "esnext",
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "target": "es5",
     "strict": true,
