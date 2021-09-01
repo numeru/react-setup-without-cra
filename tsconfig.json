@@ -7,17 +7,18 @@
     "jsx": "react",
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "target": "es5",
+    "target": "esnext",
     "strict": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@hooks/*": ["hooks/*"],
       "@components/*": ["components/*"],
-      "@layouts/*": ["layouts/*"],
+      "@apis/*": ["apis/*"],
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"],
-      "@typings/*": ["typings/*"]
+      "@stores/*": ["stores/*"],
+      "@assets/*": ["assets/*"]
     }
   }
 }

@@ -16,20 +16,21 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const config: Configuration = {
   name: 'react-setup-without-cra',
   mode: isDevelopment ? 'development' : 'production',
-  devtool: isDevelopment ? 'hidden-source-map' : 'inline-source-map',
+  devtool: isDevelopment ? 'inline-source-map' : 'hidden-source-map',
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
       '@hooks': path.resolve(__dirname, 'hooks'),
       '@components': path.resolve(__dirname, 'components'),
-      '@layouts': path.resolve(__dirname, 'layouts'),
+      '@apis': path.resolve(__dirname, 'apis'),
       '@pages': path.resolve(__dirname, 'pages'),
       '@utils': path.resolve(__dirname, 'utils'),
-      '@typings': path.resolve(__dirname, 'typings'),
+      '@stores': path.resolve(__dirname, 'stores'),
+      '@assets': path.resolve(__dirname, 'assets'),
     },
   },
   entry: {
-    app: './src/index',
+    app: './src/index.tsx',
   },
   module: {
     rules: [
@@ -43,7 +44,6 @@ const config: Configuration = {
               {
                 targets: { browsers: ['last 2 chrome versions'] },
                 debug: isDevelopment,
-                useBuiltIns: 'entry',
               },
             ],
             '@babel/preset-react',
@@ -93,7 +93,6 @@ const config: Configuration = {
     historyApiFallback: true,
     port: 3000,
     open: true,
-    hot: true,
     compress: true,
   },
 };
