@@ -6,6 +6,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const dotenv = require('dotenv');
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
@@ -51,7 +52,10 @@ const config: Configuration = {
           ],
           env: {
             development: {
-              plugins: [require.resolve('react-refresh/babel')],
+              plugins: [
+                require.resolve('react-refresh/babel'),
+                'babel-plugin-styled-components',
+              ],
             },
           },
         },
@@ -80,6 +84,9 @@ const config: Configuration = {
     }),
     new ForkTsCheckerWebpackPlugin({
       async: false,
+    }),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(dotenv.config().parsed),
     }),
     new WebpackManifestPlugin(),
   ],
